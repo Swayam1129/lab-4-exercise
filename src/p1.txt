@@ -1,0 +1,11 @@
+Output (cmake --build release):
+5148 347898375840389362
+31094 347898375840389362
+
+The row-major sum reads consecutive addresses, so every 64-byte cache line
+(8 uint64_t values) is fully used and the hardware prefetcher can stream
+memory ahead of the loop. The column-major sum jumps 4000 * 8 = 32000 bytes
+per access, so nearly every read misses the cache (and often the TLB) and
+uses only 8 bytes of each fetched line, which makes it roughly 6x slower.
+
+Timings vary between runs, but the relative ordering is consistent.

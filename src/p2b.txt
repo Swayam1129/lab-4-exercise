@@ -1,0 +1,11 @@
+Output (cmake --build release), in microseconds:
+5869
+4767
+
+The first line is the row-major convolution and the second is the Morton-order
+convolution. In Morton order each 4x4x4 block is 64 consecutive uint64_t values
+laid out like the kernel, so each dot product is one sequential 512-byte scan
+with no index arithmetic. In row-major order the same block is spread over 16
+separate 4-element runs that are 256 or 65536 elements apart, which causes more
+cache/TLB misses and needs more address computation.
+
